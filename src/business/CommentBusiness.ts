@@ -1,13 +1,13 @@
 import { CommentDatabase } from "../database/CommentDatabase";
 import { PostDatabase } from "../database/PostDatabase";
 import { UserDatabase } from "../database/UserDatabase";
-import { CreateCommentInput, CreateCommentOutput, DeleteCommentInput, DeleteCommentOutput, GetCommentsByPostIdInput, GetCommentsByPostOutput } from "../dtos/userDTO";
+import { CreateCommentInput, CreateCommentOutput, DeleteCommentInput, DeleteCommentOutput, GetCommentsByPostIdInput, GetCommentsByPostOutput, LikeOrDislikeCommentInput } from "../dtos/userDTO";
 import { BadRequestError } from "../error/BadRequestError";
 import { Comment } from "../models/Comments";
 import { HashManager } from "../services/HashManager";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
-import { CommentWithCreatorDB } from "../types";
+import { CommentWithCreatorDB, COMMENT_LIKE, LikeDislikeCommentDB } from "../types";
 
 export class CommentBusiness {
     constructor (
@@ -157,5 +157,85 @@ export class CommentBusiness {
         }
 
         return output
+    }
+
+    public likeOrDislikeComment = async (input: LikeOrDislikeCommentInput) => {
+        const {idToLikeOrDislike, token, like} = input
+
+        if (token === undefined) {
+            throw new BadRequestError("token ausente")
+        }
+        
+        const payload = this.tokenManager.getPayload(token)
+        
+        if (payload === null) {
+            throw new BadRequestError("token inválido")
+        }
+
+        if (typeof like !== "boolean") {
+            throw new BadRequestError("'like' deve ser boolean")
+        }
+
+        const commentDB = await this.commentDatabase.getCommentById(idToLikeOrDislike)
+
+        if (!commentDB) {
+            throw new BadRequestError("Comentário não encontrado")
+        }
+
+        const postId = await this.commentDatabase.getIdPostByCommentId(idToLikeOrDislike)
+
+        const likeDB = like ? 1 : 0
+
+        // if (commentDB.creator_id === payload.id) {
+        //     throw new BadRequestError("Não pode curtir seu próprio post")
+        // }
+
+        const likeDislikeDB: LikeDislikeCommentDB = {
+            user_id: payload.id,
+            post_id: postId[0].post_id,
+            comment_id: idToLikeOrDislike,
+            like: likeDB
+        }
+
+        const comment = new Comment(
+            commentDB.id,
+            commentDB.post_id,
+            commentDB.creator_id,
+            commentDB.likes,
+            commentDB.dislikes,
+            commentDB.created_at,
+            commentDB.content,
+            commentDB.creator_name
+        )
+        
+        const likeDislikeExists = await this.commentDatabase.findLikeDislike(likeDislikeDB)
+
+        if (likeDislikeExists === COMMENT_LIKE.ALREADY_LIKED) {
+            if (like) {
+                await this.commentDatabase.removeLikeDislike(likeDislikeDB)
+                comment.removeLike()
+            } else {
+                await this.commentDatabase.addLikeDislike(likeDislikeDB)
+                comment.removeLike()
+                comment.addDislike()
+            }
+        } else if (likeDislikeExists === COMMENT_LIKE.ALREADY_DISLIKED) {
+            if (like) {
+                await this.commentDatabase.addLikeDislike(likeDislikeDB)
+                comment.removeLike()
+                comment.addLike()
+            } else {
+                await this.commentDatabase.addLikeDislike(likeDislikeDB)
+                comment.removeDislike()
+            }
+        } else {
+            await this.commentDatabase.likeOrDislikeComment(likeDislikeDB)
+
+            like ? comment.addLike() : comment.addDislike()
+        }
+
+        const newComment = comment.toDBModel()
+
+        await this.commentDatabase.updateComment(idToLikeOrDislike, newComment)
     }
 }
