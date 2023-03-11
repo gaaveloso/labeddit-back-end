@@ -89,10 +89,10 @@ export interface CommentModel {
     content: string,
     likes: number,
     dislikes: number,
-    created_at: string,
-    post_id: string,
+    createdAt: string,
+    postId: string,
     creator:{
-        creator_id: string,
+        creatorId: string,
         name: string,
     }
 }

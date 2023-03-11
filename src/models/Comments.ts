@@ -1,8 +1,9 @@
-import { PostDB, PostModel } from "../types";
+import { CommentDB, CommentModel } from "../types";
 
-export class Post {
+export class Comment {
   constructor(
     private id: string,
+    private postId: string,
     private content: string,
     private likes: number,
     private dislikes: number,
@@ -19,10 +20,18 @@ export class Post {
     this.id = value;
   }
 
+  public getPostId(): string {
+    return this.postId;
+  }
+
+  public setPostId(value: string) {
+    this.postId = value;
+  }
+
   public getContent(): string {
     return this.content;
   }
-  
+
   public setContent(value: string) {
     this.content = value;
   }
@@ -30,15 +39,15 @@ export class Post {
   public getLikes(): number {
     return this.likes;
   }
-  
+
   public setLikes(value: number) {
     this.likes = value;
   }
-  
+
   public getDislikes(): number {
     return this.dislikes;
   }
-  
+
   public setDislikes(value: number) {
     this.dislikes = value;
   }
@@ -46,16 +55,16 @@ export class Post {
   public getCreatedAt(): string {
     return this.createdAt;
   }
-  
+
   public setCreatedAt(value: string) {
     this.createdAt = value;
   }
-  
+
   public getCreatorId(): string {
     return this.creatorId;
   }
-  
-  public setCreatorId(value: string): void {
+
+  public setCreatorId(value: string) {
     this.creatorId = value;
   }
 
@@ -63,10 +72,10 @@ export class Post {
     return this.creatorName;
   }
 
-  public setCreatorName(value: string): void {
-    this.creatorId = value;
+  public setCreatorName(value: string) {
+    this.creatorName = value;
   }
-  
+
   public addLike() {
     this.likes += 1;
   }
@@ -83,28 +92,30 @@ export class Post {
     this.dislikes -= 1;
   }
 
-  public toDBModel(): PostDB {
+  public toDBModel(): CommentDB {
     return {
-      id: this.id,
-      creator_id: this.creatorId,
-      content: this.content,
-      likes: this.likes,
-      dislikes: this.dislikes,
-      created_at: this.createdAt,
-    };
+        id: this.id,
+        post_id: this.postId,
+        content: this.content,
+        likes: this.likes,
+        dislikes: this.dislikes,
+        created_at: this.createdAt,
+        creator_id: this.creatorId
+    }
   }
-  
-  public toBusinessModel(): PostModel {
+
+  public toBusinessModel(): CommentModel {
     return {
-      id: this.id,
-      content: this.content,
-      likes: this.likes,
-      dislikes: this.dislikes,
-      createdAt: this.createdAt,
-      creator: {
-        id: this.creatorId,
-        name: this.creatorName,
-      },
-    };
+        id: this.id,
+        postId: this.postId,
+        content: this.content,
+        likes: this.likes,
+        dislikes: this.dislikes,
+        createdAt: this.createdAt,
+        creator:{
+            creatorId: this.creatorId,
+            name: this.creatorName,
+        }
+    }
   }
 }

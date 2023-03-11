@@ -1,4 +1,4 @@
-import { PostModel, UserModel } from "../types"
+import { CommentModel, PostModel, UserModel } from "../types"
 
 export interface GetUsersInput {
     q: unknown,
@@ -31,6 +31,13 @@ export interface LoginOutput {
 export interface GetPostsInput {
     token: string | undefined
 }
+
+export interface GetCommentsByPostIdInput {
+    postId: string,
+    token: string | undefined
+}
+
+export type GetCommentsByPostOutput = CommentModel[]
 
 export type GetPostsOuput = PostModel[]
 
