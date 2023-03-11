@@ -4,11 +4,11 @@ export class Comment {
   constructor(
     private id: string,
     private postId: string,
-    private content: string,
+    private creatorId: string,
     private likes: number,
     private dislikes: number,
     private createdAt: string,
-    private creatorId: string,
+    private content: string,
     private creatorName: string
   ) {}
 
