@@ -84,6 +84,11 @@ export class UserBusiness {
         throw new BadRequestError("'password' deve possuir no mínimo 3 caracteres")
       }
 
+      const existingUser = await this.userDatabase.findByEmail(email);
+      if (existingUser) {
+        throw new BadRequestError("Endereço de email já existe");
+      }
+
       const id = this.idGenerator.generate()
       const hashedPassword = await this.hashManager.hash(password)
       const role = USER_ROLES.NORMAL

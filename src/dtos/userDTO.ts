@@ -39,6 +39,16 @@ export interface GetCommentsByPostIdInput {
 
 export type GetCommentsByPostOutput = CommentModel[]
 
+export interface CreateCommentInput {
+    postId: string,
+    content: string,
+    token: string | undefined
+}
+
+export interface CreateCommentOutput {
+    message: string
+}
+
 export type GetPostsOuput = PostModel[]
 
 export interface CreatePostInput {
@@ -66,6 +76,10 @@ export interface DeletePostInput {
 export interface DeleteCommentInput {
     idToDelete: string,
     token: string | undefined
+}
+
+export interface DeleteCommentOutput {
+    message: string
 }
 
 export interface LikeOrDislikePostInput {
