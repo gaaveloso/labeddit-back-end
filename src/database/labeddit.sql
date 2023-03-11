@@ -73,19 +73,23 @@ VALUES
 CREATE TABLE comments_likes_dislikes (
     user_id TEXT NOT NULL,
     comment_id TEXT NOT NULL,
+    post_id TEXT NOT NULL,
     like INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
     FOREIGN KEY (comment_id) REFERENCES comments (id)
     ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES posts (id)
+    ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
-INSERT INTO comments_likes_dislikes (user_id, comment_id, like)
+INSERT INTO comments_likes_dislikes (user_id, comment_id, post_id, like)
 VALUES
-    ("u002", "c001", 1),
-    ("u001", "c002", 0);
+    ("u002", "c001", "p002", 1),
+    ("u001", "c002", "p001", 0);
 
 SELECT * FROM users;
 SELECT * FROM posts;
