@@ -21,6 +21,7 @@ export class PostDatabase extends BaseDatabase {
         "posts.content",
         "posts.likes",
         "posts.dislikes",
+        "posts.comments",
         "posts.created_at",
         "users.name AS creator_name"
       )
@@ -84,7 +85,7 @@ export class PostDatabase extends BaseDatabase {
     );
   };
 
-  public findOrDislikePost = async (
+  public findLikeOrDislikePost = async (
     likeDislikeDBToFind: LikeDislikePostDB
   ): Promise<POST_LIKE | null> => {
     const [likeDislikeDB]: LikeDislikePostDB[] = await BaseDatabase.connection(
