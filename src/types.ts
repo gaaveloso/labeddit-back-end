@@ -33,6 +33,7 @@ export interface PostDB {
     content: string,
     likes: number,
     dislikes: number,
+    comments: number,
     created_at: string,
 }
 
@@ -76,6 +77,7 @@ export enum COMMENT_LIKE {
 export interface PostModel {
     id: string
     content: string,
+    comments: number,
     likes: number,
     dislikes: number,
     createdAt: string,

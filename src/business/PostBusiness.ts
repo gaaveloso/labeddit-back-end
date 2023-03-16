@@ -36,6 +36,7 @@ export class PostBusiness {
             const post = new Post (
                 postDB.id,
                 postDB.content,
+                postDB.comments,
                 postDB.likes,
                 postDB.dislikes,
                 postDB.created_at,
@@ -45,7 +46,6 @@ export class PostBusiness {
 
             return post.toBusinessModel()
         })
-
 
         return posts
     }
@@ -75,10 +75,11 @@ export class PostBusiness {
         const createdAt = new Date().toISOString();
         const creatorId = payload.id
         const creatorName = payload.name
-
+      
         const post = new Post(
             id,
             content,
+            0,
             0,
             0,
             createdAt,
@@ -158,6 +159,7 @@ export class PostBusiness {
         const post = new Post(
           postWithCreatorDB.id,
           postWithCreatorDB.content,
+          postWithCreatorDB.comments,
           postWithCreatorDB.likes,
           postWithCreatorDB.dislikes,
           postWithCreatorDB.created_at,
@@ -165,7 +167,7 @@ export class PostBusiness {
           postWithCreatorDB.creator_name
         );
         
-        const likeDislikeExists = await this.postDatabase.findOrDislikePost(likeDislikeDB)
+        const likeDislikeExists = await this.postDatabase.findLikeOrDislikePost(likeDislikeDB)
     
         if (likeDislikeExists === POST_LIKE.ALREADY_LIKED) {
           if (like) {
