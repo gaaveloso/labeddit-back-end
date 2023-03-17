@@ -182,7 +182,7 @@ export class PostBusiness {
         } else if (likeDislikeExists === POST_LIKE.ALREADY_DISLIKED) {
           if (like) {
             await this.postDatabase.updateLikeDislike(likeDislikeDB)
-            post.removeLike()
+            post.removeDislike()
             post.addLike()
           } else {
             await this.postDatabase.removeLikeDislike(likeDislikeDB)

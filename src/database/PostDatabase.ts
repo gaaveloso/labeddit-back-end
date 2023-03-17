@@ -55,7 +55,7 @@ export class PostDatabase extends BaseDatabase {
       .update(postDB)
       .where({ id });
   };
-  
+
   public findPostWithCreatorById = async (
     postId: string
   ): Promise<PostWithCreatorDB | undefined> => {
@@ -124,5 +124,14 @@ export class PostDatabase extends BaseDatabase {
         user_id: likeDislikeDB.user_id,
         post_id: likeDislikeDB.post_id,
       });
+  };
+
+  public updatePostCommentsCount = async (
+    postId: string,
+    commentsCount: number
+  ): Promise<void> => {
+    await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+      .update({ comments: commentsCount })
+      .where({ id: postId });
   };
 }

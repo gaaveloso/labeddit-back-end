@@ -1,9 +1,12 @@
 import { CommentDB, CommentWithCreatorDB, COMMENT_LIKE, LikeDislikeCommentDB, LikeDislikePostDB } from "../types";
 import { BaseDatabase } from "./BaseDatabase";
+import { PostDatabase } from "./PostDatabase";
 
 export class CommentDatabase extends BaseDatabase {
   public static TABLE_COMMENTS = "comments";
   public static TABLE_LIKES_DISLIKES_COMMENTS = "comments_likes_dislikes";
+  public static TABLE_POSTS = "posts";
+
 
   public getCommentWithCreatorByPostId = async (post_id: string) => {
     const result: CommentWithCreatorDB[] = await BaseDatabase.connection(
@@ -39,7 +42,8 @@ export class CommentDatabase extends BaseDatabase {
   public createComment = async (comment: CommentDB) => {
     await BaseDatabase.connection(CommentDatabase.TABLE_COMMENTS).insert(
       comment
-    );
+    )
+
   };
 
   public deleteCommentById = async (id: string) => {

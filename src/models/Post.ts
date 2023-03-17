@@ -76,6 +76,10 @@ export class Post {
     this.creatorId = value;
   }
 
+  public addComments() {
+    this.comments += 1
+  }
+
   public addLike() {
     this.likes += 1;
   }
